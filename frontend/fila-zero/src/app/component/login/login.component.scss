@@ -1,0 +1,91 @@
+.register-page {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Roboto', sans-serif;
+  
+    .form-container {
+      background: #ffffff;
+      padding: 2.5rem 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 8px 32px rgba(123, 31, 162, 0.2);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      color: #212121;
+  
+      .title {
+        margin-bottom: 0.5rem;
+        font-size: 2rem;
+        font-weight: 600;
+        color: #7B1FA2;
+      }
+  
+      .subtitle {
+        margin-bottom: 1.5rem;
+        font-size: 1rem;
+        color: #757575;
+      }
+  
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+  
+        .input-field {
+          width: 100%;
+  
+          mat-form-field {
+            width: 100%;
+  
+            .mat-form-field-outline {
+              border-color: #7B1FA2;
+            }
+  
+            .mat-form-field-label {
+              color: #7B1FA2;
+            }
+  
+            .mat-input-element {
+              color: #212121;
+            }
+          }
+        }
+  
+        .btn-submit {
+          background-color: #E91E63;
+          color: #ffffff;
+          height: 44px;
+          border-radius: 22px;
+          font-weight: 500;
+          letter-spacing: 0.5px;
+          transition: background 0.3s ease;
+  
+          &:hover {
+            background-color: #D81B60;
+          }
+        }
+      }
+  
+      .login-link {
+        cursor: pointer;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: #757575;
+  
+        a {
+          color: #7B1FA2;
+          text-decoration: none;
+          font-weight: 500;
+  
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
