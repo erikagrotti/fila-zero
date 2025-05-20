@@ -1,0 +1,98 @@
+<div class="agendamento-page">
+  <div class="header">
+    <button mat-icon-button class="back-button" (click)="voltar()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1 class="title">Agendar Consulta</h1>
+  </div>
+
+  <div class="content">
+    <p class="subtitle">Preencha os dados abaixo para agendar sua consulta</p>
+
+    <div *ngIf="loadingData" class="loading-container">
+      <mat-progress-spinner diameter="40" mode="indeterminate"></mat-progress-spinner>
+      <p>Carregando dados...</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="agendarConsulta()" *ngIf="!loadingData">
+      <div class="form-row">
+        <!-- Nome -->
+        <mat-form-field appearance="outline" class="input-field">
+          <mat-label>Nome completo</mat-label>
+          <input matInput formControlName="nome" autocomplete="off">
+          <mat-error *ngIf="form.get('nome')?.hasError('required')">Obrigatório</mat-error>
+        </mat-form-field>
+
+        <!-- CPF -->
+        <mat-form-field appearance="outline" class="input-field">
+          <mat-label>CPF</mat-label>
+          <input matInput formControlName="cpf" maxlength="11">
+          <mat-error *ngIf="form.get('cpf')?.hasError('required')">Obrigatório</mat-error>
+          <mat-error *ngIf="form.get('cpf')?.hasError('minlength')">CPF deve ter 11 dígitos</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <!-- Data de Nascimento -->
+        <mat-form-field appearance="outline" class="input-field">
+          <mat-label>Data de nascimento</mat-label>
+          <input matInput [matDatepicker]="picker1" formControlName="dataNascimento">
+          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+          <mat-error *ngIf="form.get('dataNascimento')?.hasError('required')">Obrigatório</mat-error>
+        </mat-form-field>
+
+        <!-- Especialidade -->
+        <mat-form-field appearance="outline" class="input-field">
+          <mat-label>Especialidade</mat-label>
+          <mat-select formControlName="especialidade" (selectionChange)="onEspecialidadeChange($event.value)">
+            <mat-option *ngFor="let esp of especialidades" [value]="esp.id">{{ esp.nome }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="form.get('especialidade')?.hasError('required')">Obrigatório</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <!-- Médico -->
+        <mat-form-field appearance="outline" class="input-field">
+          <mat-label>Médico</mat-label>
+          <mat-select formControlName="medico" [disabled]="medicos.length === 0" (selectionChange)="onMedicoChange($event.value)">
+            <mat-option *ngFor="let medico of medicos" [value]="medico.id">{{ medico.nome }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="form.get('medico')?.hasError('required')">Obrigatório</mat-error>
+        </mat-form-field>
+
+        <!-- Data da consulta -->
+        <mat-form-field appearance="outline" class="input-field">
+          <mat-label>Data da consulta</mat-label>
+          <input matInput [matDatepicker]="picker2" formControlName="dataConsulta" 
+                 [disabled]="datasDisponiveis.length === 0"
+                 [matDatepickerFilter]="filtrarDatasDisponiveis">
+          <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+          <mat-error *ngIf="form.get('dataConsulta')?.hasError('required')">Obrigatório</mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Horário -->
+      <mat-form-field appearance="outline" class="input-field horario-field">
+        <mat-label>Horário</mat-label>
+        <mat-select formControlName="horario" [disabled]="horariosDisponiveis.length === 0">
+          <mat-option *ngFor="let horario of horariosDisponiveis" [value]="horario">{{ horario }}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('horario')?.hasError('required')">Obrigatório</mat-error>
+      </mat-form-field>
+
+      <!-- Botão -->
+      <button mat-raised-button class="btn-submit" type="submit" [disabled]="loading || form.invalid" [ngClass]="{'btn-disabled': form.invalid, 'btn-enabled': !form.invalid}">
+        <ng-container *ngIf="!loading">Agendar Consulta</ng-container>
+        <mat-progress-spinner
+          *ngIf="loading"
+          diameter="24"
+          mode="indeterminate"
+          strokeWidth="3">
+        </mat-progress-spinner>
+      </button>
+    </form>
+  </div>
+</div>

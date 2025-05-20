@@ -1,0 +1,48 @@
+<div class="consultas-page">
+  <div class="header">
+    <button mat-icon-button class="back-button" (click)="voltar()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1 class="title">Minhas Consultas</h1>
+  </div>
+
+  <div class="content">
+    <div *ngIf="consultas.length === 0" class="empty-state">
+      <mat-icon class="empty-icon">event_busy</mat-icon>
+      <p>Você não possui consultas agendadas</p>
+      <button mat-raised-button color="primary" (click)="navegarParaAgendamento()">
+        Agendar Consulta
+      </button>
+    </div>
+
+    <div *ngIf="consultas.length > 0" class="consultas-list">
+      <mat-card *ngFor="let consulta of consultas" class="consulta-card">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>event_note</mat-icon>
+          <mat-card-title>{{ consulta.especialidadeNome }}</mat-card-title>
+          <mat-card-subtitle>{{ consulta.medicoNome }}</mat-card-subtitle>
+          <div class="status-chip" [ngClass]="getStatusClass(consulta.status)">
+            {{ consulta.status | titlecase }}
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="consulta-info">
+            <div class="info-item">
+              <mat-icon>calendar_today</mat-icon>
+              <span>{{ formatarData(consulta.dataConsulta) }}</span>
+            </div>
+            <div class="info-item">
+              <mat-icon>access_time</mat-icon>
+              <span>{{ consulta.horario }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+        <mat-card-actions *ngIf="consulta.status === 'agendada'">
+          <button mat-button color="warn" (click)="cancelarConsulta(consulta)">
+            <mat-icon>cancel</mat-icon> CANCELAR
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>

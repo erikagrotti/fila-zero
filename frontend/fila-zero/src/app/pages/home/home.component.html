@@ -1,0 +1,100 @@
+<div class="home-container">
+  <!-- Header/Toolbar -->
+  <mat-toolbar color="primary" class="toolbar">
+    <div class="logo">
+      <img src="assets/images/clinic.png" alt="FilaZero Logo" class="logo-img">
+      <span class="logo-text">FilaZero</span>
+    </div>
+    <span class="spacer"></span>
+    <div class="user-menu">
+      <button mat-button [matMenuTriggerFor]="menu" class="user-button">
+        <mat-icon>account_circle</mat-icon>
+        <span>Olá, {{ userName }}</span>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item>
+          <mat-icon>person</mat-icon>
+          <span>Meu Perfil</span>
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Sair</span>
+        </button>
+      </mat-menu>
+    </div>
+  </mat-toolbar>
+
+  <!-- Banner/Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1>Bem-vindo à Clínica FilaZero</h1>
+      <p>Cuidando da sua saúde com excelência e agilidade</p>
+    </div>
+  </div>
+
+  <!-- Cards de Funcionalidades -->
+  <div class="cards-section">
+    <h2>O que você deseja fazer hoje?</h2>
+    <div class="cards-container">
+      <mat-card *ngFor="let card of cards" class="feature-card" (click)="navigateTo(card.route)">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>{{ card.icon }}</mat-icon>
+          <mat-card-title>{{ card.title }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>{{ card.description }}</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button color="primary">ACESSAR</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Seção de Informações da Clínica -->
+  <div class="clinic-info">
+    <h2>Sobre a Clínica FilaZero</h2>
+    <div class="info-content">
+      <div class="info-text">
+        <p>A Clínica FilaZero é referência em atendimento médico de qualidade, oferecendo serviços em diversas especialidades com profissionais altamente qualificados.</p>
+        <p>Nossa missão é proporcionar um atendimento humanizado, ágil e eficiente, eliminando filas e reduzindo o tempo de espera.</p>
+        <ul>
+          <li><strong>Atendimento Humanizado</strong> - Tratamos cada paciente com respeito e atenção</li>
+          <li><strong>Tecnologia Avançada</strong> - Utilizamos equipamentos modernos para diagnósticos precisos</li>
+          <li><strong>Profissionais Qualificados</strong> - Nossa equipe é formada por especialistas renomados</li>
+        </ul>
+      </div>
+      <div class="info-image">
+        <img src="assets/images/clinic.png" alt="Clínica FilaZero">
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Contato</h3>
+        <p><mat-icon>location_on</mat-icon> Av. Principal, 1000</p>
+        <p><mat-icon>phone</mat-icon> (11) 1234-5678</p>
+        <p><mat-icon>email</mat-icon> contato&#64;filazero.com</p>
+      </div>
+      <div class="footer-section">
+        <h3>Horário de Funcionamento</h3>
+        <p>Segunda a Sexta: 8h às 20h</p>
+        <p>Sábados: 8h às 14h</p>
+      </div>
+      <div class="footer-section">
+        <h3>Redes Sociais</h3>
+        <div class="social-icons">
+          <mat-icon>facebook</mat-icon>
+          <mat-icon>instagram</mat-icon>
+          <mat-icon>twitter</mat-icon>
+        </div>
+      </div>
+    </div>
+    <div class="copyright">
+      <p>&copy; 2024 Clínica FilaZero. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+</div>
