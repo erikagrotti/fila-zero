@@ -1,0 +1,284 @@
+// Variáveis
+$primary-color: #3498db;
+$secondary-color: #2c3e50;
+$accent-color: #e74c3c;
+$light-color: #f8f9fa;
+$dark-color: #343a40;
+$text-color: #333;
+
+.home-container {
+  font-family: 'Roboto', sans-serif;
+  color: $text-color;
+}
+
+// Hero Section
+.hero {
+  background: linear-gradient(135deg, $secondary-color, darken($primary-color, 15%));
+  color: white;
+  padding: 5rem 2rem;
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.cta-primary, .cta-secondary {
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cta-primary {
+  background-color: $accent-color;
+  color: white;
+  border: none;
+  
+  &:hover {
+    background-color: darken($accent-color, 10%);
+    transform: translateY(-2px);
+  }
+}
+
+.cta-secondary {
+  background-color: transparent;
+  color: white;
+  border: 2px solid white;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+  }
+}
+
+// Features Section
+.features {
+  padding: 5rem 2rem;
+  background-color: $light-color;
+  text-align: center;
+}
+
+h2 {
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  position: relative;
+  display: inline-block;
+  
+  &:after {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 3px;
+    background-color: $primary-color;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.feature-card {
+  background-color: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-10px);
+  }
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: $secondary-color;
+}
+
+// How it works
+.how-it-works {
+  padding: 5rem 2rem;
+  background-color: white;
+  text-align: center;
+}
+
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.step {
+  flex: 1;
+  min-width: 250px;
+  max-width: 350px;
+  padding: 2rem;
+}
+
+.step-number {
+  width: 50px;
+  height: 50px;
+  background-color: $primary-color;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0 auto 1.5rem;
+}
+
+// Testimonials
+.testimonials {
+  padding: 5rem 2rem;
+  background-color: $light-color;
+  text-align: center;
+}
+
+.testimonial-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.testimonial {
+  flex: 1;
+  min-width: 300px;
+  background-color: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  text-align: left;
+  position: relative;
+  
+  &:before {
+    content: '"';
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 4rem;
+    color: rgba($primary-color, 0.1);
+    font-family: Georgia, serif;
+  }
+  
+  p {
+    font-style: italic;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.testimonial-author {
+  font-weight: bold;
+  color: $secondary-color;
+}
+
+// Footer
+.footer {
+  background-color: $secondary-color;
+  color: white;
+  padding: 3rem 2rem;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.footer-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.footer-links {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  
+  a {
+    color: white;
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+    
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+.footer-copyright {
+  opacity: 0.6;
+  font-size: 0.9rem;
+}
+
+// Responsividade
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.5rem;
+  }
+  
+  .subtitle {
+    font-size: 1.2rem;
+  }
+  
+  .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .steps {
+    flex-direction: column;
+    align-items: center;
+  }
+}

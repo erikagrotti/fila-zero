@@ -1,0 +1,46 @@
+<app-header></app-header>
+
+<div class="agendamentos-container">
+  <div class="agendamentos-card">
+    <h1>Meus Agendamentos</h1>
+    
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <div *ngIf="loading" class="loading">
+      Carregando agendamentos...
+    </div>
+
+    <div *ngIf="!loading && agendamentos.length === 0" class="empty-state">
+      <p>Você ainda não possui agendamentos.</p>
+      <a routerLink="/agendamento" class="btn-agendar">Agendar Consulta</a>
+    </div>
+
+    <div *ngIf="!loading && agendamentos.length > 0" class="agendamentos-list">
+      <div class="agendamento-item" *ngFor="let agendamento of agendamentos">
+        <div class="agendamento-header">
+          <h3>{{ agendamento.nome_paciente }}</h3>
+          <span class="status" [ngClass]="agendamento.status">{{ agendamento.status }}</span>
+        </div>
+        
+        <div class="agendamento-details">
+          <div class="detail-row">
+            <span class="label">Data e Hora:</span>
+            <span class="value">{{ formatarDataHora(agendamento.data_agendamento) }}</span>
+          </div>
+          
+          <div class="detail-row">
+            <span class="label">Email:</span>
+            <span class="value">{{ agendamento.email_paciente }}</span>
+          </div>
+          
+          <div class="detail-row">
+            <span class="label">Telefone:</span>
+            <span class="value">{{ agendamento.telefone_paciente }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
