@@ -1,0 +1,58 @@
+.agendamentos-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  
+  .agendamentos-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    
+    h1 {
+      margin-bottom: 24px;
+      text-align: center;
+      color: #333;
+      font-size: 24px;
+    }
+    
+    .loading, .error-message, .empty-state {
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .error-message {
+      color: #dc3545;
+    }
+    
+    .empty-state {
+      color: #6c757d;
+      font-style: italic;
+    }
+    
+    .agendamentos-list {
+      margin-top: 20px;
+      
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        
+        th, td {
+          padding: 12px 15px;
+          text-align: left;
+          border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+          background-color: #f8f9fa;
+          font-weight: bold;
+          color: #495057;
+        }
+        
+        tr:hover {
+          background-color: #f1f1f1;
+        }
+      }
+    }
+  }
+}

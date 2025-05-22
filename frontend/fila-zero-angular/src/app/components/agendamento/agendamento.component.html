@@ -89,19 +89,36 @@
         </div>
 
         <div class="form-group">
-          <label for="disponibilidade">Data e Horário</label>
+          <label for="data">Data</label>
           <select 
-            id="disponibilidade" 
-            formControlName="disponibilidade_id"
-            [disabled]="!agendamentoForm.get('medico_id')?.value"
+            id="data" 
+            formControlName="data_selecionada"
+            [disabled]="!agendamentoForm.get('medico_id')?.value || datasDisponiveis.length === 0"
           >
-            <option value="">Selecione uma data e horário</option>
-            <option *ngFor="let disponibilidade of disponibilidades" [value]="disponibilidade.id">
-              {{ formatarDataHora(disponibilidade.data_hora) }}
+            <option value="">{{ datasDisponiveis.length > 0 ? 'Selecione uma data' : 'Nenhuma data disponível' }}</option>
+            <option *ngFor="let data of datasDisponiveis" [value]="data">
+              {{ formatarData(data) }}
+            </option>
+          </select>
+          <div *ngIf="agendamentoForm.get('data_selecionada')?.invalid && agendamentoForm.get('data_selecionada')?.touched" class="error-text">
+            Data é obrigatória
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="horario">Horário</label>
+          <select 
+            id="horario" 
+            formControlName="disponibilidade_id"
+            [disabled]="!agendamentoForm.get('data_selecionada')?.value || horariosDisponiveis.length === 0"
+          >
+            <option value="">{{ horariosDisponiveis.length > 0 ? 'Selecione um horário' : 'Nenhum horário disponível' }}</option>
+            <option *ngFor="let disponibilidade of horariosDisponiveis" [value]="disponibilidade.id">
+              {{ formatarHora(disponibilidade.hora) }}
             </option>
           </select>
           <div *ngIf="agendamentoForm.get('disponibilidade_id')?.invalid && agendamentoForm.get('disponibilidade_id')?.touched" class="error-text">
-            Data e horário são obrigatórios
+            Horário é obrigatório
           </div>
         </div>
       </div>

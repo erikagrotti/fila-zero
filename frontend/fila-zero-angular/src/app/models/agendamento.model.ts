@@ -12,8 +12,14 @@ export interface Medico {
 export interface Disponibilidade {
   id: number;
   medico_id: number;
-  data_hora: string;
+  data: string;
+  hora: string;
   disponivel: boolean;
+}
+
+export interface DataDisponivel {
+  data: string;
+  disponibilidades: Disponibilidade[];
 }
 
 export interface AgendamentoForm {
@@ -32,6 +38,9 @@ export interface Agendamento {
   nome_paciente: string;
   email_paciente: string;
   telefone_paciente: string;
-  data_agendamento: string;
+  data_agendamento_data: string;
+  data_agendamento_hora: string;
+  data_consulta_data: string;
+  data_consulta_hora: string;
   status: string;
 }

@@ -1,0 +1,42 @@
+<app-header></app-header>
+
+<div class="agendamentos-container">
+  <div class="agendamentos-card">
+    <h1>Fila de Agendamentos - Hoje</h1>
+    
+    <div *ngIf="loading" class="loading">
+      Carregando agendamentos...
+    </div>
+    
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
+    
+    <div *ngIf="!loading && !error">
+      <div *ngIf="agendamentosHoje.length === 0" class="empty-state">
+        <p>Não há agendamentos para hoje.</p>
+      </div>
+      
+      <div *ngIf="agendamentosHoje.length > 0" class="agendamentos-list">
+        <table>
+          <thead>
+            <tr>
+              <th>Horário</th>
+              <th>Paciente</th>
+              <th>Telefone</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let agendamento of agendamentosHoje">
+              <td>{{ formatarHora(agendamento.data_consulta_hora) || 'Horário não definido' }}</td>
+              <td>{{ agendamento.nome_paciente }}</td>
+              <td>{{ agendamento.telefone_paciente }}</td>
+              <td>{{ agendamento.status }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../header/header.component';
 import { AgendamentoService } from '../../services/agendamento.service';
 import { Agendamento } from '../../models/agendamento.model';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-meus-agendamentos',
   standalone: true,
-  imports: [CommonModule, HeaderComponent],
+  imports: [CommonModule, HeaderComponent, RouterLink],
   templateUrl: './meus-agendamentos.component.html',
   styleUrls: ['./meus-agendamentos.component.scss']
 })
@@ -36,14 +37,15 @@ export class MeusAgendamentosComponent implements OnInit {
     });
   }
 
-  formatarDataHora(dataHora: string): string {
-    const data = new Date(dataHora);
-    return data.toLocaleString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  formatarDataHora(data: string, hora: string): string {
+    if (!data || !hora) return '';
+    
+    try {
+      const [ano, mes, dia] = data.split('-');
+      return `${dia}/${mes}/${ano} às ${hora.substring(0, 5)}`; // Formata como DD/MM/YYYY às HH:MM
+    } catch (error) {
+      console.error('Erro ao formatar data e hora:', error);
+      return '';
+    }
   }
 }

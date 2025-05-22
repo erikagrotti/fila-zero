@@ -4,6 +4,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { HomeComponent } from './components/home/home.component';
 import { AgendamentoComponent } from './components/agendamento/agendamento.component';
 import { MeusAgendamentosComponent } from './components/meus-agendamentos/meus-agendamentos.component';
+import { FilaComponent } from './components/fila/fila.component';
 import { authGuard, loginGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -30,6 +31,11 @@ export const routes: Routes = [
   {
     path: 'meus-agendamentos',
     component: MeusAgendamentosComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'fila',
+    component: FilaComponent,
     canActivate: [authGuard]
   },
   { 
