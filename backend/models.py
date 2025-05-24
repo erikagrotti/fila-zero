@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Date, Time
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from database import Base
@@ -36,8 +36,9 @@ class Disponibilidade(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     medico_id = Column(Integer, ForeignKey("medicos.id"), nullable=False)
-    data_hora = Column(DateTime, nullable=False)
     disponivel = Column(Boolean, default=True)
+    data = Column(Date, nullable=False)
+    hora = Column(Time(timezone=True), nullable=False)
     
     # Relacionamento com médico
     medico = relationship("Medico", back_populates="disponibilidades")
@@ -53,8 +54,11 @@ class Agendamento(Base):
     nome_paciente = Column(String, nullable=False)
     email_paciente = Column(String, nullable=False)
     telefone_paciente = Column(String, nullable=False)
-    data_agendamento = Column(DateTime, default=func.now())
     status = Column(String, default="confirmado")
+    data_agendamento_data = Column(Date, default=func.current_date())
+    data_agendamento_hora = Column(Time(timezone=True), default=func.current_time())
+    data_consulta_data = Column(Date, nullable=False)
+    data_consulta_hora = Column(Time(timezone=True), nullable=False)
     
     # Relacionamento com disponibilidade
     disponibilidade = relationship("Disponibilidade", back_populates="agendamentos")

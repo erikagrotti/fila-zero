@@ -1,10 +1,11 @@
 from fastapi.middleware.cors import CORSMiddleware
 
-# Configuração do CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+def setup_cors(app):
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://localhost:4200"],  # URL do frontend Angular
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+        expose_headers=["*"]
+    )

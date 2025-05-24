@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { HeaderComponent } from '../header/header.component';
 import { Agendamento } from '../../models/agendamento.model';
 import { FilaService } from '../../services/fila.service';
-import { HeaderComponent } from '../header/header.component';
 
 @Component({
   selector: 'app-fila',
   standalone: true,
-  imports: [CommonModule, RouterLink, HeaderComponent],
+  imports: [CommonModule, HeaderComponent],
   templateUrl: './fila.component.html',
   styleUrls: ['./fila.component.scss']
 })
@@ -26,11 +25,11 @@ export class FilaComponent implements OnInit {
   carregarAgendamentosHoje(): void {
     this.loading = true;
     this.filaService.getAgendamentosHoje().subscribe({
-      next: (agendamentos) => {
+      next: (agendamentos: Agendamento[]) => {
         this.agendamentosHoje = agendamentos;
         this.loading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         this.error = 'Erro ao carregar agendamentos. Por favor, tente novamente.';
         this.loading = false;
         console.error('Erro ao carregar agendamentos:', error);

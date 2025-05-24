@@ -81,11 +81,11 @@ export class AgendamentoComponent implements OnInit {
   carregarEspecialidades(): void {
     this.loading = true;
     this.agendamentoService.getEspecialidades().subscribe({
-      next: (especialidades) => {
+      next: (especialidades: Especialidade[]) => {
         this.especialidades = especialidades;
         this.loading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         this.errorMessage = 'Erro ao carregar especialidades. Por favor, tente novamente.';
         this.loading = false;
       }
@@ -95,11 +95,11 @@ export class AgendamentoComponent implements OnInit {
   carregarMedicos(especialidadeId: number): void {
     this.loading = true;
     this.agendamentoService.getMedicosPorEspecialidade(especialidadeId).subscribe({
-      next: (medicos) => {
+      next: (medicos: Medico[]) => {
         this.medicos = medicos;
         this.loading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         this.errorMessage = 'Erro ao carregar médicos. Por favor, tente novamente.';
         this.loading = false;
       }
@@ -119,9 +119,9 @@ export class AgendamentoComponent implements OnInit {
     ];
     
     this.agendamentoService.getDisponibilidadesPorMedico(medicoId).subscribe({
-      next: (disponibilidades) => {
+      next: (disponibilidades: Disponibilidade[]) => {
         // Ordenar disponibilidades por data e hora
-        this.disponibilidades = disponibilidades.sort((a, b) => {
+        this.disponibilidades = disponibilidades.sort((a: Disponibilidade, b: Disponibilidade) => {
           // Primeiro comparar por data
           const comparaData = a.data.localeCompare(b.data);
           if (comparaData !== 0) return comparaData;
@@ -135,7 +135,7 @@ export class AgendamentoComponent implements OnInit {
         
         this.loading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Erro ao carregar disponibilidades:', error);
         this.errorMessage = 'Erro ao carregar disponibilidades. Por favor, tente novamente.';
         this.loading = false;
@@ -235,15 +235,7 @@ export class AgendamentoComponent implements OnInit {
       agendamentoData.disponibilidade_id = parseInt(agendamentoData.disponibilidade_id);
     }
     
-    // Adicionar cabeçalhos de autorização manualmente
-    const token = this.authService.getToken();
-    const headers = { 
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    };
-    
-    this.agendamentoService.criarAgendamento(agendamentoData, headers).subscribe({
+    this.agendamentoService.criarAgendamento(agendamentoData).subscribe({
       next: (response) => {
         this.loading = false;
         alert('Agendamento realizado com sucesso!');
@@ -252,7 +244,7 @@ export class AgendamentoComponent implements OnInit {
         // Redirecionar para a página de meus agendamentos
         this.router.navigate(['/meus-agendamentos']);
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Erro ao agendar:', error);
         this.loading = false;
         this.errorMessage = error.error?.detail || 'Erro ao realizar agendamento. Por favor, tente novamente.';

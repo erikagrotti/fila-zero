@@ -1,20 +1,45 @@
-import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { Injectable } from '@angular/core';
+import {
+  HttpRequest,
+  HttpHandler,
+  HttpEvent,
+  HttpInterceptor,
+  HttpErrorResponse
+} from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  // Obter token do localStorage diretamente para evitar dependência circular
-  const token = localStorage.getItem('auth_token');
-  
-  // Clonar a requisição original
-  let authReq = req.clone();
-  
-  // Não adicionar token para endpoints de autenticação
-  if (!req.url.includes('/token') && !req.url.includes('/register') && token) {
-    authReq = req.clone({
-      headers: req.headers.set('Authorization', `Bearer ${token}`)
-    });
+@Injectable()
+export class AuthInterceptor implements HttpInterceptor {
+
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    const token = this.authService.getToken();
+    
+    if (token) {
+      // Adiciona o token de autenticação ao cabeçalho se disponível
+      request = request.clone({
+        setHeaders: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+    }
+
+    return next.handle(request).pipe(
+      catchError((error: HttpErrorResponse) => {
+        // Se receber um erro 401 (não autorizado), redirecionar para o login
+        if (error.status === 401) {
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        }
+        return throwError(() => error);
+      })
+    );
   }
-  
-  return next(authReq);
-};
+}

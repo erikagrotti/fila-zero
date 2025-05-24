@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { AuthResponse, User, UserLogin, UserRegister } from '../models/user.model';
 import { isPlatformBrowser } from '@angular/common';
@@ -25,13 +25,24 @@ export class AuthService {
     if (isPlatformBrowser(this.platformId)) {
       const token = localStorage.getItem(this.tokenKey);
       if (token) {
-        this.getUserProfile().subscribe();
+        this.getUserProfile().subscribe({
+          error: () => {
+            // Se houver erro ao obter o perfil, limpar o token
+            this.logout();
+          }
+        });
       }
     }
   }
 
   register(user: UserRegister): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/register`, user);
+    return this.http.post<User>(`${this.apiUrl}/register`, user, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }),
+      withCredentials: true
+    });
   }
 
   login(credentials: UserLogin): Observable<AuthResponse> {
@@ -42,8 +53,10 @@ export class AuthService {
 
     return this.http.post<AuthResponse>(`${this.apiUrl}/token`, formData.toString(), {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json'
+      },
+      withCredentials: true
     }).pipe(
       tap(response => {
         if (isPlatformBrowser(this.platformId)) {
@@ -55,12 +68,14 @@ export class AuthService {
   }
 
   getUserProfile(): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/users/me`)
-      .pipe(
-        tap(user => {
-          this.currentUserSubject.next(user);
-        })
-      );
+    return this.http.get<User>(`${this.apiUrl}/users/me`, {
+      headers: this.getAuthHeaders(),
+      withCredentials: true
+    }).pipe(
+      tap(user => {
+        this.currentUserSubject.next(user);
+      })
+    );
   }
 
   logout(): void {
@@ -82,5 +97,14 @@ export class AuthService {
       return localStorage.getItem(this.tokenKey);
     }
     return null;
+  }
+
+  getAuthHeaders(): HttpHeaders {
+    const token = this.getToken();
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
   }
 }

@@ -26,11 +26,11 @@ export class MeusAgendamentosComponent implements OnInit {
   carregarAgendamentos(): void {
     this.loading = true;
     this.agendamentoService.listarAgendamentos().subscribe({
-      next: (agendamentos) => {
+      next: (agendamentos: Agendamento[]) => {
         this.agendamentos = agendamentos;
         this.loading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         this.errorMessage = 'Erro ao carregar agendamentos. Por favor, tente novamente.';
         this.loading = false;
       }

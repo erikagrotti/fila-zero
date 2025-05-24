@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException, status
-from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
+from datetime import date, time, datetime
 from fastapi.middleware.cors import CORSMiddleware
 
 import models
@@ -13,14 +13,14 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Configuração do CORS - permitindo todas as origens
+# Configuração do CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permitir todas as origens
+    allow_origins=["http://localhost:4200"],  # URL do frontend Angular
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"],
+    expose_headers=["*"]
 )
 
 # Incluir rotas de autenticação
@@ -80,7 +80,9 @@ def criar_agendamento(
         disponibilidade_id=agendamento.disponibilidade_id,
         nome_paciente=agendamento.nome_paciente,
         email_paciente=agendamento.email_paciente,
-        telefone_paciente=agendamento.telefone_paciente
+        telefone_paciente=agendamento.telefone_paciente,
+        data_consulta_data=disponibilidade.data,
+        data_consulta_hora=disponibilidade.hora
     )
     
     # Marcar a disponibilidade como indisponível
@@ -99,3 +101,16 @@ def listar_agendamentos(db: Session = Depends(get_db), current_user = Depends(ge
         models.Agendamento.user_id == current_user.id
     ).all()
     return agendamentos
+
+@app.get("/api/agendamentos/hoje", response_model=List[schemas.Agendamento])
+def listar_agendamentos_hoje(db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+    hoje = datetime.now().date()
+    agendamentos = db.query(models.Agendamento).filter(
+        models.Agendamento.data_consulta_data == hoje
+    ).all()
+    return agendamentos
+
+# Rota para verificar o status do servidor
+@app.get("/api/health")
+def health_check():
+    return {"status": "ok"}

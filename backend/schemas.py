@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, date, time
 
 # Schemas para autenticação
 class UserBase(BaseModel):
@@ -19,7 +19,6 @@ class User(UserBase):
     
     class Config:
         from_attributes = True
-        # Não esperar o campo is_active que foi removido do modelo
 
 class Token(BaseModel):
     access_token: str
@@ -44,30 +43,38 @@ class Medico(BaseModel):
     class Config:
         from_attributes = True
 
-class Disponibilidade(BaseModel):
-    id: int
+class DisponibilidadeBase(BaseModel):
     medico_id: int
-    data_hora: datetime
     disponivel: bool
+    data: date
+    hora: time
+
+class DisponibilidadeCreate(DisponibilidadeBase):
+    pass
+
+class Disponibilidade(DisponibilidadeBase):
+    id: int
     
     class Config:
         from_attributes = True
 
-class AgendamentoCreate(BaseModel):
-    disponibilidade_id: int
+class AgendamentoBase(BaseModel):
     nome_paciente: str
     email_paciente: EmailStr
     telefone_paciente: str
 
-class Agendamento(BaseModel):
+class AgendamentoCreate(AgendamentoBase):
+    disponibilidade_id: int
+
+class Agendamento(AgendamentoBase):
     id: int
     user_id: Optional[int] = None
     disponibilidade_id: int
-    nome_paciente: str
-    email_paciente: EmailStr
-    telefone_paciente: str
-    data_agendamento: datetime
     status: str
+    data_agendamento_data: date
+    data_agendamento_hora: time
+    data_consulta_data: date
+    data_consulta_hora: time
     
     class Config:
         from_attributes = True
