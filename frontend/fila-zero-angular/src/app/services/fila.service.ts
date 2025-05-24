@@ -1,8 +1,29 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Agendamento } from '../models/agendamento.model';
 import { AuthService } from './auth.service';
+
+export interface FilaAtendimento {
+  id: number;
+  agendamento_id: number;
+  tipo_fila: string;
+  posicao: number;
+  data_entrada: string;
+  hora_entrada: string;
+  status: string;
+}
+
+export interface AgendamentoComFila extends Agendamento {
+  fila?: FilaAtendimento;
+  nome_medico?: string;
+  nome_especialidade?: string;
+}
+
+export interface FilaAtendimentoCreate {
+  agendamento_id: number;
+  tipo_fila: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -15,48 +36,43 @@ export class FilaService {
     private authService: AuthService
   ) { }
 
-  getAgendamentosHoje(): Observable<Agendamento[]> {
-    // Implementação real que usaria o backend
-    return this.http.get<Agendamento[]>(`${this.apiUrl}/agendamentos/hoje`, {
+  getAgendamentosHoje(): Observable<AgendamentoComFila[]> {
+    return this.http.get<AgendamentoComFila[]>(`${this.apiUrl}/agendamentos/hoje`, {
       headers: this.authService.getAuthHeaders(),
       withCredentials: true
     });
-    
-    // Dados de exemplo para desenvolvimento
-    /*
-    const hoje = new Date().toISOString().split('T')[0];
-    const horaAtual = new Date().toTimeString().split(' ')[0];
-    
-    const dadosExemplo: Agendamento[] = [
-      {
-        id: 1,
-        user_id: 1,
-        disponibilidade_id: 1,
-        nome_paciente: 'João Silva',
-        email_paciente: 'joao@example.com',
-        telefone_paciente: '(11) 98765-4321',
-        status: 'confirmado',
-        data_agendamento_data: hoje,
-        data_agendamento_hora: horaAtual,
-        data_consulta_data: hoje,
-        data_consulta_hora: '09:00:00'
-      },
-      {
-        id: 2,
-        user_id: 2,
-        disponibilidade_id: 2,
-        nome_paciente: 'Maria Oliveira',
-        email_paciente: 'maria@example.com',
-        telefone_paciente: '(11) 91234-5678',
-        status: 'confirmado',
-        data_agendamento_data: hoje,
-        data_agendamento_hora: horaAtual,
-        data_consulta_data: hoje,
-        data_consulta_hora: '10:30:00'
-      }
-    ];
-    
-    return of(dadosExemplo);
-    */
+  }
+
+  realizarChecking(agendamentoId: number, tipoFila: string): Observable<FilaAtendimento> {
+    const filaData: FilaAtendimentoCreate = {
+      agendamento_id: agendamentoId,
+      tipo_fila: tipoFila
+    };
+
+    return this.http.post<FilaAtendimento>(`${this.apiUrl}/fila`, filaData, {
+      headers: this.authService.getAuthHeaders(),
+      withCredentials: true
+    });
+  }
+
+  abandonarFila(agendamentoId: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/fila/${agendamentoId}`, {
+      headers: this.authService.getAuthHeaders(),
+      withCredentials: true
+    });
+  }
+
+  listarFila(): Observable<FilaAtendimento[]> {
+    return this.http.get<FilaAtendimento[]>(`${this.apiUrl}/fila`, {
+      headers: this.authService.getAuthHeaders(),
+      withCredentials: true
+    });
+  }
+
+  atualizarStatusFila(filaId: number, status: string): Observable<FilaAtendimento> {
+    return this.http.put<FilaAtendimento>(`${this.apiUrl}/fila/${filaId}`, { status }, {
+      headers: this.authService.getAuthHeaders(),
+      withCredentials: true
+    });
   }
 }

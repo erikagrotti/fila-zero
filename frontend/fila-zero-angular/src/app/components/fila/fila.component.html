@@ -8,10 +8,6 @@
       Carregando agendamentos...
     </div>
     
-    <div *ngIf="error" class="error-message">
-      {{ error }}
-    </div>
-    
     <div *ngIf="!loading && !error">
       <div *ngIf="agendamentosHoje.length === 0" class="empty-state">
         <p>Não há agendamentos para hoje.</p>
@@ -23,20 +19,155 @@
             <tr>
               <th>Horário</th>
               <th>Paciente</th>
-              <th>Telefone</th>
+              <th>Médico</th>
+              <th>Especialidade</th>
               <th>Status</th>
+              <th>Posição na Fila</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let agendamento of agendamentosHoje">
               <td>{{ formatarHora(agendamento.data_consulta_hora) || 'Horário não definido' }}</td>
               <td>{{ agendamento.nome_paciente }}</td>
-              <td>{{ agendamento.telefone_paciente }}</td>
-              <td>{{ agendamento.status }}</td>
+              <td>{{ agendamento.nome_medico || 'Não informado' }}</td>
+              <td>{{ agendamento.nome_especialidade || 'Não informada' }}</td>
+              <td>
+                <span [class]="getStatusClass(agendamento.status)">
+                  {{ getStatusText(agendamento.status) }}
+                </span>
+              </td>
+              <td>
+                <span [class]="{'fila-destaque': agendamento.fila}">
+                  {{ getPosicaoFila(agendamento) }}
+                </span>
+              </td>
+              <td>
+                <button 
+                  *ngIf="podeRealizarChecking(agendamento)" 
+                  class="btn-checking" 
+                  (click)="abrirModalChecking(agendamento)">
+                  Check-in
+                </button>
+                <div *ngIf="agendamento.fila" class="acoes-fila">
+                  <span class="check-status">
+                    <i class="check-icon">✓</i> Check-in realizado
+                  </span>
+                  <button 
+                    *ngIf="podeAbandonarFila(agendamento)"
+                    class="btn-abandonar" 
+                    (click)="abrirModalAbandonarFila(agendamento)">
+                    Abandonar Fila
+                  </button>
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Check-in -->
+<div class="modal-overlay" *ngIf="showCheckingModal">
+  <div class="modal-content">
+    <h2>Realizar Check-in</h2>
+    
+    <div *ngIf="selectedAgendamento" class="modal-body">
+      <p>Paciente: <strong>{{ selectedAgendamento.nome_paciente }}</strong></p>
+      <p>Horário: <strong>{{ formatarHora(selectedAgendamento.data_consulta_hora) }}</strong></p>
+      
+      <div class="consulta-info-modal">
+        <p>Médico: <strong>{{ selectedAgendamento.nome_medico || 'Não informado' }}</strong></p>
+        <p>Especialidade: <strong>{{ selectedAgendamento.nome_especialidade || 'Não informada' }}</strong></p>
+      </div>
+      
+      <div class="form-group">
+        <label>Tipo de Fila:</label>
+        <div class="radio-group">
+          <label>
+            <input type="radio" name="tipoFila" value="comum" [(ngModel)]="tipoFilaSelecionado">
+            Comum
+          </label>
+          <label>
+            <input type="radio" name="tipoFila" value="preferencial" [(ngModel)]="tipoFilaSelecionado">
+            Preferencial
+          </label>
+        </div>
+      </div>
+      
+      <div *ngIf="error" class="error-message">
+        {{ error }}
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="fecharModalChecking()" [disabled]="processandoChecking">Cancelar</button>
+      <button class="btn-confirm" (click)="realizarChecking()" [disabled]="processandoChecking">
+        <span *ngIf="!processandoChecking">Confirmar</span>
+        <span *ngIf="processandoChecking">Processando...</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Confirmação para Abandonar Fila -->
+<div class="modal-overlay" *ngIf="showConfirmModal">
+  <div class="modal-content confirm-modal">
+    <h2>Abandonar Fila</h2>
+    
+    <div class="modal-body">
+      <div class="warning-icon">
+        <i>!</i>
+      </div>
+      
+      <p class="confirm-message">Tem certeza que deseja abandonar a fila?</p>
+      <p class="confirm-details">Você perderá sua posição atual e precisará fazer check-in novamente caso queira retornar à fila.</p>
+      
+      <div *ngIf="agendamentoParaAbandonar" class="agendamento-info">
+        <div class="info-row">
+          <span class="info-label">Paciente:</span>
+          <span class="info-value">{{ agendamentoParaAbandonar.nome_paciente }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Médico:</span>
+          <span class="info-value">{{ agendamentoParaAbandonar.nome_medico || 'Não informado' }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Posição:</span>
+          <span class="info-value fila-destaque">{{ getPosicaoFila(agendamentoParaAbandonar) }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="fecharModalAbandonarFila()">Cancelar</button>
+      <button class="btn-confirm btn-danger" (click)="abandonarFila()">
+        Sim, abandonar fila
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Alerta -->
+<div class="modal-overlay" *ngIf="showAlertModal">
+  <div class="modal-content alert-modal" [ngClass]="{'alert-success': alertType === 'success', 'alert-error': alertType === 'error', 'alert-info': alertType === 'info'}">
+    <div class="alert-header">
+      <div class="alert-icon">
+        <i *ngIf="alertType === 'success'">✓</i>
+        <i *ngIf="alertType === 'error'">✕</i>
+        <i *ngIf="alertType === 'info'">i</i>
+      </div>
+      <h2>{{ alertTitle }}</h2>
+    </div>
+    
+    <div class="alert-body">
+      <p>{{ alertMessage }}</p>
+    </div>
+    
+    <div class="alert-footer">
+      <button class="btn-confirm" (click)="fecharAlerta()">OK</button>
     </div>
   </div>
 </div>

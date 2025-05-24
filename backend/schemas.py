@@ -78,3 +78,32 @@ class Agendamento(AgendamentoBase):
     
     class Config:
         from_attributes = True
+
+# Schemas para fila de atendimento
+class FilaAtendimentoBase(BaseModel):
+    agendamento_id: int
+    tipo_fila: str  # 'comum' ou 'preferencial'
+
+class FilaAtendimentoCreate(FilaAtendimentoBase):
+    pass
+
+class FilaAtendimentoUpdate(BaseModel):
+    status: str
+
+class FilaAtendimento(FilaAtendimentoBase):
+    id: int
+    posicao: int
+    data_entrada: date
+    hora_entrada: time
+    status: str
+    
+    class Config:
+        from_attributes = True
+
+class AgendamentoComFila(Agendamento):
+    fila: Optional[FilaAtendimento] = None
+    nome_medico: Optional[str] = None
+    nome_especialidade: Optional[str] = None
+    
+    class Config:
+        from_attributes = True
