@@ -1,5 +1,6 @@
 /* Estilos globais */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
 
 * {
   box-sizing: border-box;
@@ -78,4 +79,12 @@ button {
   color: #e74c3c;
   font-size: 0.875rem;
   margin-top: 0.25rem;
+}
+
+/* Estilos para o modal de sucesso */
+.success-modal {
+  .mat-dialog-container {
+    padding: 24px;
+    border-radius: 8px;
+  }
 }

@@ -83,4 +83,12 @@ export class AgendamentoService {
       withCredentials: true
     });
   }
+
+  // Método para cancelar um agendamento
+  cancelarAgendamento(agendamentoId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/agendamentos/${agendamentoId}`, {
+      headers: this.authService.getAuthHeaders(),
+      withCredentials: true
+    });
+  }
 }

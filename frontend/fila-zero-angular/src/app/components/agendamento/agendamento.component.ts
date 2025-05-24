@@ -23,6 +23,9 @@ export class AgendamentoComponent implements OnInit {
   horariosDisponiveis: Disponibilidade[] = [];
   loading = false;
   errorMessage = '';
+  successMessage = '';
+  showSuccessModal = false;
+  agendamentoInfo = '';
 
   constructor(
     private fb: FormBuilder,
@@ -200,6 +203,11 @@ export class AgendamentoComponent implements OnInit {
     }
   }
 
+  fecharModal(): void {
+    this.showSuccessModal = false;
+    this.router.navigate(['/meus-agendamentos']);
+  }
+
   onSubmit(): void {
     if (this.agendamentoForm.invalid) {
       return;
@@ -238,11 +246,19 @@ export class AgendamentoComponent implements OnInit {
     this.agendamentoService.criarAgendamento(agendamentoData).subscribe({
       next: (response) => {
         this.loading = false;
-        alert('Agendamento realizado com sucesso!');
+        
+        // Encontrar a disponibilidade selecionada
+        const dataConsulta = this.disponibilidades.find(d => d.id === agendamentoData.disponibilidade_id);
+        
+        if (dataConsulta) {
+          this.agendamentoInfo = this.formatarDataHora(dataConsulta);
+        }
+        
+        // Mostrar modal de sucesso
+        this.showSuccessModal = true;
+        
         // Limpar o formulário
         this.agendamentoForm.reset();
-        // Redirecionar para a página de meus agendamentos
-        this.router.navigate(['/meus-agendamentos']);
       },
       error: (error: any) => {
         console.error('Erro ao agendar:', error);

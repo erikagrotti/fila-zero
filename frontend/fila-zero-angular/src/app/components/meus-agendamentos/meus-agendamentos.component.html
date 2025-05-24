@@ -1,5 +1,41 @@
 <app-header></app-header>
 
+<!-- Modal de confirmação para cancelar agendamento -->
+<div *ngIf="showConfirmModal" class="modal-overlay">
+  <div class="confirm-modal">
+    <div class="confirm-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#FF5252" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+    </div>
+    <h2>Confirmar Cancelamento</h2>
+    <p>Tem certeza que deseja cancelar sua consulta agendada para <strong>{{ formatarDataHora(agendamentoParaCancelar?.data_consulta_data || '', agendamentoParaCancelar?.data_consulta_hora || '') }}</strong>?</p>
+    <div class="modal-actions">
+      <button class="btn-secondary" (click)="fecharModalConfirmacao()">Não, manter</button>
+      <button class="btn-danger" (click)="cancelarAgendamento()" [disabled]="loading">
+        {{ loading ? 'Processando...' : 'Sim, cancelar' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de sucesso após cancelamento -->
+<div *ngIf="showSuccessModal" class="modal-overlay">
+  <div class="success-modal">
+    <div class="success-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+    </div>
+    <h2>Agendamento Cancelado</h2>
+    <p>Sua consulta agendada para <strong>{{ agendamentoCancelado }}</strong> foi cancelada com sucesso.</p>
+    <button class="btn-primary" (click)="fecharModalSucesso()">Entendi</button>
+  </div>
+</div>
+
 <div class="agendamentos-container">
   <div class="agendamentos-card">
     <h1>Meus Agendamentos</h1>
@@ -8,7 +44,7 @@
       {{ errorMessage }}
     </div>
 
-    <div *ngIf="loading" class="loading">
+    <div *ngIf="loading && !showConfirmModal" class="loading">
       Carregando agendamentos...
     </div>
 
@@ -39,6 +75,10 @@
             <span class="label">Telefone:</span>
             <span class="value">{{ agendamento.telefone_paciente }}</span>
           </div>
+        </div>
+        
+        <div class="agendamento-actions" *ngIf="agendamento.status !== 'cancelado'">
+          <button class="btn-cancelar" (click)="confirmarCancelamento(agendamento)">Cancelar Consulta</button>
         </div>
       </div>
     </div>

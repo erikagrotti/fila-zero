@@ -102,6 +102,41 @@ def listar_agendamentos(db: Session = Depends(get_db), current_user = Depends(ge
     ).all()
     return agendamentos
 
+@app.delete("/api/agendamentos/{agendamento_id}")
+def cancelar_agendamento(
+    agendamento_id: int, 
+    db: Session = Depends(get_db), 
+    current_user = Depends(get_current_user)
+):
+    # Buscar o agendamento
+    agendamento = db.query(models.Agendamento).filter(
+        models.Agendamento.id == agendamento_id,
+        models.Agendamento.user_id == current_user.id
+    ).first()
+    
+    if not agendamento:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Agendamento não encontrado"
+        )
+    
+    # Buscar a disponibilidade associada
+    disponibilidade = db.query(models.Disponibilidade).filter(
+        models.Disponibilidade.id == agendamento.disponibilidade_id
+    ).first()
+    
+    if disponibilidade:
+        # Marcar a disponibilidade como disponível novamente
+        disponibilidade.disponivel = True
+    
+    # Atualizar o status do agendamento para cancelado
+    agendamento.status = "cancelado"
+    
+    # Salvar as alterações
+    db.commit()
+    
+    return {"message": "Agendamento cancelado com sucesso"}
+
 @app.get("/api/agendamentos/hoje", response_model=List[schemas.Agendamento])
 def listar_agendamentos_hoje(db: Session = Depends(get_db), current_user = Depends(get_current_user)):
     hoje = datetime.now().date()

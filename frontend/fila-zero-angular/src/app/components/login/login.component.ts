@@ -28,7 +28,7 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
-    if (this.loginForm.invalid) {
+    if (this.loginForm.invalid || this.loading) {
       return;
     }
 
@@ -37,9 +37,11 @@ export class LoginComponent {
 
     this.authService.login(this.loginForm.value).subscribe({
       next: () => {
-        this.router.navigate(['/home']);
+        console.log('Login bem-sucedido, redirecionando...');
+        this.router.navigateByUrl('/home');
       },
       error: (error) => {
+        console.error('Erro no login:', error);
         this.errorMessage = error.error?.detail || 'Falha no login. Verifique suas credenciais.';
         this.loading = false;
       },

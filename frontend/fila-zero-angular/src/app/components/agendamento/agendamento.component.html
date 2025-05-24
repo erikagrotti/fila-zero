@@ -1,5 +1,20 @@
 <app-header></app-header>
 
+<!-- Modal de sucesso -->
+<div *ngIf="showSuccessModal" class="success-modal-overlay">
+  <div class="success-modal">
+    <div class="success-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+    </div>
+    <h2>Agendamento Confirmado!</h2>
+    <p>Sua consulta foi agendada com sucesso para <strong>{{ agendamentoInfo }}</strong>.</p>
+    <button class="btn-primary" (click)="fecharModal()">Ver Meus Agendamentos</button>
+  </div>
+</div>
+
 <div class="agendamento-container">
   <div class="agendamento-card">
     <h1>Agendamento de Consulta</h1>

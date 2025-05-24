@@ -13,7 +13,7 @@ from database import get_db
 # Configurações de segurança
 SECRET_KEY = "YOUR_SECRET_KEY_HERE"  # Em produção, use uma chave segura e armazenada em variáveis de ambiente
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 1440  # Aumentado para 24 horas (1440 minutos)
 
 # Ferramentas para criptografia e autenticação
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -41,7 +41,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
+        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -114,3 +114,11 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 @router.get("/users/me", response_model=schemas.User)
 async def read_users_me(current_user = Depends(get_current_user)):
     return current_user
+
+@router.post("/refresh-token", response_model=schemas.Token)
+async def refresh_access_token(current_user = Depends(get_current_user)):
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": current_user.username}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
